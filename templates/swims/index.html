@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Swims</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body style="background-color: rgb(243 244 246);">
+
+    <!-- Statistics -->
+    <section class="mb-5">
+        <div class="container">
+            <h1>Swim App!</h1>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card h-100 p-3">
+                        <h2>1</h2>
+                        <canvas id="firstChart"></canvas>
+                    </div> 
+                </div>
+                <div class="col">
+                    <div class="card h-100 p-3">
+                        <h2>2</h2>
+                        <canvas id="secondChart"></canvas>
+                    </div> 
+                </div>
+                <div class="col">
+                    <div class="card h-100 p-3">
+                        <h2>3</h2>
+                        <div id="thirdChart"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- List Swims -->
+    <section class="container">
+        <div class="card p-3 d-md-block">
+            <div class="mb-3">
+                <a href="/swims/create" role="button" class="btn btn-primary">Create</a>
+            </div>
+
+            <table class="table table-hover">
+                <thead>
+                    <th scope="col">ID</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">Kraulen Bahnen</th>
+                    <th scope="col">Kraulen Bahnen Zeit</th>
+                    <th scope="col">Brust Bahnen</th>
+                    <th scope="col">Brust Bahnen Zeit</th>
+                    <th scope="col">Rücken Bahnen</th>
+                    <th scope="col">Rücken Bahnen Zeit</th>
+                    <th scope="col">Kommentar</th>
+                    <th scope="col">Bahnlänge</th>
+                    <th scope="col">Kcal</th>
+                    <th scope="col"></th>
+                </thead>
+                <tbody>
+                    {% for swim in swims %}
+                        <div>
+                            <th scope="row">{{ swim.id }}</th>
+                            <td>{{ swim.timestamp }}</td>
+                            <td>{{ swim.kraulen_bahnen }}</td>
+                            <td>{{ swim.kraulen_bahnen_zeit }}</td>
+                            <td>{{ swim.brust_bahnen }}</td>
+                            <td>{{ swim.brust_bahnen_zeit }}</td>
+                            <td>{{ swim.ruecken_bahnen }}</td>
+                            <td>{{ swim.ruecken_bahnen_zeit }}</td>
+                            <td>{{ swim.kommentar }}</td>
+                            <td>{{ swim.bahnlaenge }}</td>
+                            <td>{{ swim.kcal }}</td>
+                            <td class="d-grid gap-3">
+                                <div><a href="/swims/{{ swim.id }}/edit" role="button" class="g-col-6 btn btn-warning">Edit</a></div>
+                                <div><button data-id="{{ swim.id }}" role="button" class="g-col-6 btn btn-danger delete-swim-button">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        const deleteSwimButtons = document.getElementsByClassName('delete-swim-button');
+
+        for (var i = 0; i < deleteSwimButtons.length; i++) {
+            deleteSwimButtons[i].onclick = function (e) {
+                e.preventDefault();
+
+                fetch('/swims/' + this.dataset.id, {
+                    method: 'DELETE',
+                });
+            }
+        }
+
+        // First Chart
+        const firstData = {{ first }};
+        const firstCtx = document.getElementById('firstChart').getContext('2d');
+        const firstChart = new Chart(firstCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Kraulen', 'Brust', 'Rücken'],
+                datasets: [{
+                    data: firstData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {}
+        });
+
+        // Second Chart
+
+        const secondData = [{{ second }}];
+        const secondCtx = document.getElementById('secondChart').getContext('2d');
+        const secondChart = new Chart(secondCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Kraulen', 'Brust', 'Rücken'],
+                datasets: [{
+                    data: secondData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            },
+        });
+
+        let calendarEl = document.getElementById('thirdChart');
+        const thirdData = [];
+
+        {% for thi in third %}
+        thirdData.push( new Date('{{ thi }}'));
+        {% endfor %}
+
+        console.log(thirdData);
+
+        let events = [];
+        let id = 0;
+        thirdData.forEach(date => {
+            events.push({
+                'id': id,
+                'title': 'Swim',
+                'start': date,
+            });
+
+            id++;
+        });
+
+        // Third Chart
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: events,
+        });
+
+        calendar.render();
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+</body>
+</html>

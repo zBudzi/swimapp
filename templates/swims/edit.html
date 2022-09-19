@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- JavaScript Bundle with Popper -->
+    <title>Edit Swim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+<body>
+    
+    <!-- Edit Swim -->
+    <section class="container">
+        <form id="create-swim-form">
+
+            <!-- Timestamp -->
+            <div class="mb-3">
+                <label for="swim-timestamp" class="form-label">Timestamp:</label>
+                <input id="swim-timestamp" type="datetime-local" class="form-control" value="{{ swim.timestamp }}">
+            </div>
+            
+            <!-- Kraulen -->
+            <div class="container mb-3">
+                <div class="row">
+                    <!-- Kraulen Bahnen -->
+                    <div class="col">
+                        <label for="swim-kraulen-bahnen" class="form-label">Kraulen Bahnen</label>
+                        <input id="swim-kraulen-bahnen" type="number" class="form-control" value="{{ swim.kraulen_bahnen }}">
+                    </div>
+                    <!-- Kraulen Bahnen Zeit -->
+                    <div class="col">
+                        <label for="swim-kraulen-bahnen-zeit" class="form-label">Kraulen Bahnen Zeit (in sec)</label>
+                        <input id="swim-kraulen-bahnen-zeit" type="number" class="form-control" value="{{ swim.kraulen_bahnen_zeit }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brust -->
+            <div class="container mb-3">
+                <div class="row">
+                    <!-- Brust Bahnen -->
+                    <div class="col">
+                        <label for="swim-brust-bahnen" class="form-label">Brust Bahnen</label>
+                        <input id="swim-brust-bahnen" type="number" class="form-control" value="{{ swim.brust_bahnen }}">
+                    </div>
+
+                    <!-- Brust Bahnen Zeit -->
+                    <div class="col">
+                        <label for="swim-brust-bahnen-zeit" class="form-label">Brust Bahnen Zeit (in sec)</label>
+                        <input id="swim-brust-bahnen-zeit" type="number" class="form-control" value="{{ swim.brust_bahnen_zeit }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ruecken -->
+            <div class="container mb-3">
+                <div class="row">
+                    <!-- Ruecken Bahnen -->
+                    <div class="col">
+                        <label for="swim-ruecken-bahnen" class="form-label">Rücken Bahnen</label>
+                        <input id="swim-ruecken-bahnen" type="number" class="form-control" value="{{ swim.ruecken_bahnen }}">
+                    </div>
+
+                    <!-- Ruecken Bahnen Zeit -->
+                    <div class="col">
+                        <label for="swim-ruecken-bahnen-zeit" class="form-label">Rücken Bahnen Zeit (in sec)</label>
+                        <input id="swim-ruecken-bahnen-zeit" type="number" class="form-control" value="{{ swim.ruecken_bahnen_zeit }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bahnlaenge -->
+            <div class="mb-3">
+                <label for="swim-bahnlaenge" class="form-label">Bahnlänge (in m)</label>
+                <input id="swim-bahnlaenge" type="number" class="form-control" value="{{ swim.bahnlaenge }}">
+            </div>
+
+            <!-- Kcal -->
+            <div class="mb-3">
+                <label for="swim-kcal" class="form-label">Kcal</label>
+                <input id="swim-kcal" type="number" class="form-control" value="{{ swim.kcal }}">
+            </div>
+
+            <!-- Kommentar -->
+            <div class="mb-3">
+                <label for="swim-kommentar" class="form-label">Kommentar</label>
+                <input id="swim-kommentar" type="text" class="form-control" value="{{ swim.kommentar }}">
+            </div>
+
+
+            <!-- Submit -->
+            <button id="update-swim-button">Update</button>
+        </form>
+    </section>
+
+    <script>
+        const updateSwimButton = document.getElementById('update-swim-button');
+
+        const timestamp = document.getElementById('swim-timestamp');
+        const kraulenBahnen = document.getElementById('swim-kraulen-bahnen');
+        const kraulenBahnenZeit = document.getElementById('swim-kraulen-bahnen-zeit');
+        const brustBahnen = document.getElementById('swim-brust-bahnen');
+        const brustBahnenZeit = document.getElementById('swim-brust-bahnen-zeit');
+        const rueckenBahnen = document.getElementById('swim-ruecken-bahnen');
+        const rueckenBahnenZeit = document.getElementById('swim-ruecken-bahnen-zeit');
+        const bahnlaenge = document.getElementById('swim-bahnlaenge');
+        const kcal = document.getElementById('swim-kcal');
+        const kommentar = document.getElementById('swim-kommentar');
+
+        updateSwimButton.onclick = function (e) {
+            e.preventDefault();
+
+            
+            fetch('/swims/{{ swim.id }}', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    'timestamp': timestamp.value,
+                    'kraulen_bahnen': kraulenBahnen.value,
+                    'kraulen_bahnen_zeit': kraulenBahnenZeit.value,
+                    'brust_bahnen': brustBahnen.value,
+                    'brust_bahnen_zeit': brustBahnenZeit.value,
+                    'ruecken_bahnen': rueckenBahnen.value,
+                    'ruecken_bahnen_zeit': rueckenBahnenZeit.value,
+                    'bahnlaenge': bahnlaenge.value,
+                    'kcal': kcal.value,
+                    'kommentar': kommentar.value,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+</body>
+</html>
